@@ -1,55 +1,46 @@
 import React, { useState } from "react";
 import API from "../../api";
+import { Loader, AlertCircle } from "lucide-react";
 
 const RepoForm = ({ setRepoData }) => {
   const [repoUrl, setRepoUrl] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear any previous errors
+    setError("");
+    setLoading(true);
     try {
       const { data } = await API.post("/fetch_repo", { repo_url: repoUrl });
-      setRepoData(data); // Update the repo data in the parent component
+      setRepoData(data);
     } catch (err) {
-      console.error(err.response?.data?.message || "An error occurred");
       setError(err.response?.data?.message || "Failed to fetch repository data");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: "400px", margin: "0 auto" }}>
+    <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
       <input
         type="text"
         placeholder="GitHub Repo URL"
         value={repoUrl}
         onChange={(e) => setRepoUrl(e.target.value)}
         required
-        style={{
-          width: "100%",
-          padding: "10px",
-          marginBottom: "10px",
-          border: "1px solid #ccc",
-          borderRadius: "4px",
-        }}
+        className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <button
         type="submit"
-        style={{
-          width: "100%",
-          padding: "10px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
+        disabled={loading}
+        className="w-full p-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50"
       >
-        Fetch Repository
+        {loading ? <Loader className="animate-spin" /> : "Fetch Repository"}
       </button>
       {error && (
-        <p style={{ color: "red", marginTop: "10px", textAlign: "center" }}>
-          {error}
+        <p className="text-red-500 flex items-center gap-2">
+          <AlertCircle size={18} /> {error}
         </p>
       )}
     </form>

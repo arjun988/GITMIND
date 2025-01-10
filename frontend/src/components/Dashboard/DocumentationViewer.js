@@ -1,4 +1,5 @@
 import React from "react";
+import { Copy, Download } from "lucide-react";
 
 const DocumentationViewer = ({ documentation }) => {
   const handleCopy = () => {
@@ -18,11 +19,23 @@ const DocumentationViewer = ({ documentation }) => {
   };
 
   return (
-    <div>
-      <h3>Generated Documentation</h3>
-      <pre>{documentation}</pre>
-      <button onClick={handleCopy}>Copy</button>
-      <button onClick={handleDownload}>Download</button>
+    <div className="p-4 bg-white shadow rounded-md">
+      <h3 className="text-xl font-bold mb-4">Generated Documentation</h3>
+      <pre className="p-4 bg-gray-100 rounded-md overflow-auto">{documentation}</pre>
+      <div className="flex gap-4 mt-4">
+        <button
+          onClick={handleCopy}
+          className="flex items-center gap-2 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        >
+          <Copy /> Copy
+        </button>
+        <button
+          onClick={handleDownload}
+          className="flex items-center gap-2 p-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+        >
+          <Download /> Download
+        </button>
+      </div>
     </div>
   );
 };

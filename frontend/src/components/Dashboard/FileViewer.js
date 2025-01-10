@@ -1,39 +1,48 @@
 import React, { useState } from "react";
+import {  Loader } from "lucide-react";
 import API from "../../api";
-
 const FileViewer = ({ file, setDocumentation }) => {
   const [fileContent, setFileContent] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const fetchFileContent = async () => {
+    setLoading(true);
     try {
-      // Convert to raw GitHub URL
       const rawUrl = file.download_url
         .replace("github.com", "raw.githubusercontent.com")
         .replace("/blob/", "/");
-
-      // Make a request to the backend to fetch the file content
-      const { data } = await API.post("/fetch_file_content", { repo_url: rawUrl });
-      setFileContent(data.content); // Assuming 'content' is returned by the backend
-    } catch (err) {
-      console.error("Failed to fetch file content:", err);
+      const response = await API.post("/fetch_file_content", { repo_url: rawUrl });
+      setFileContent(response.data.content);
+    } finally {
+      setLoading(false);
     }
   };
 
   const generateDocumentation = async () => {
     try {
-      const { data } = await API.post("/generate_doc", { code: fileContent });
-      setDocumentation(data.documentation);
+      const response = await API.post("/generate_doc", { code: fileContent });
+      setDocumentation(response.data.documentation);
     } catch (err) {
       console.error("Failed to generate documentation:", err);
     }
   };
 
   return (
-    <div>
-      <h3>File: {file.name}</h3>
-      <button onClick={fetchFileContent}>View File Content</button>
-      <pre>{fileContent}</pre>
-      <button onClick={generateDocumentation}>Generate Documentation</button>
+    <div className="p-4 bg-white shadow rounded-md">
+      <h3 className="text-xl font-bold mb-4">File: {file.name}</h3>
+      <button
+        onClick={fetchFileContent}
+        className="w-full p-2 bg-blue-500 text-white rounded-md mb-4 hover:bg-blue-600"
+      >
+        {loading ? <Loader className="animate-spin" /> : "View File Content"}
+      </button>
+      <pre className="p-4 bg-gray-100 rounded-md overflow-auto">{fileContent}</pre>
+      <button
+        onClick={generateDocumentation}
+        className="w-full p-2 bg-green-500 text-white rounded-md mt-4 hover:bg-green-600"
+      >
+        Generate Documentation
+      </button>
     </div>
   );
 };
