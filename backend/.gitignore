@@ -1,0 +1,42 @@
+# Virtual environment
+venv/
+
+# Byte-compiled Python files
+*.py[cod]
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Log files
+*.log
+
+# Database files
+*.db
+
+# Flask instance folder
+instance/
+
+# Coverage reports
+.coverage
+.htmlcov
+
+# Distribution files
+dist/
+build/
+
+# Egg info
+*.egg-info/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# Miscellaneous
+.env
+.env.example
+requirements.txt
